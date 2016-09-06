@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Item</h1>
+
+    <table>
+        <tbody>
+        <tr>
+            <th>Id</th>
+            <td>{{ item.id }}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>{{ item.name }}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>{{ item.description }}</td>
+        </tr>
+        <tr>
+            <th>Available</th>
+            <td>{% if item.available %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('item_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('item_edit', { 'id': item.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+            <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+
+
+    <table>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Datum gekregen</th>
+            <th>Datum ingeleverd</th>
+            <th>Extra</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item_log in item_logs %}
+            <tr>
+                <td>{{ item_log.user }}</td>
+                <td>{{ item_log.dateReceived | date }}</td>
+                <td>
+                    {% if item_log.dateReturned %}
+                        {{ item_log.dateReturned | date }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ item_log.peripherals }}</td>
+                <td>
+                    {% if not item_log.dateReturned %}
+                        <a href="{{ path('item_return', {id: item.id, itemLog: item_log.id}) }}">
+                            Inleveren
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {{ form(item_log_form) }}
+
+{% endblock %}
